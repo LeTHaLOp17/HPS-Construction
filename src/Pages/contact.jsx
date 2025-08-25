@@ -1,0 +1,619 @@
+import React, { useState, useEffect } from "react";
+import emailjs from "@emailjs/browser";
+import "../Style/contact.css";
+
+import {
+  FaPhone,
+  FaWhatsapp,
+  FaEnvelope,
+  FaMapMarkerAlt,
+  FaClock,
+  FaLeaf,
+  FaHammer,
+  FaTruck,
+  FaCheckCircle,
+  FaInstagram,
+  FaFacebook,
+  FaLinkedin,
+  FaPaperPlane,
+  FaCode,
+} from "react-icons/fa";
+
+const Contact = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    service: "",
+    message: "",
+    location: "",
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null);
+  const [errors, setErrors] = useState({});
+
+  // Initialize EmailJS with environment variable
+  useEffect(() => {
+    emailjs.init(import.meta.env.VITE_EMAILJS_PUBLIC_KEY);
+    console.log(
+      "🔑 Contact EmailJS initialized with:",
+      import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+    );
+  }, []);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+
+    // Clear specific field error when user starts typing
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
+  };
+
+  // FIXED: Updated validation - only name, phone, and service are mandatory
+  const validateForm = () => {
+    const newErrors = {};
+
+    // Name is required
+    if (!formData.name.trim() || formData.name.trim().length < 2) {
+      newErrors.name = "Name is required and must be at least 2 characters";
+    }
+
+    // Phone is required
+    if (
+      !formData.phone.trim() ||
+      !/^[+]?[\d\s\-()]{7,15}$/.test(formData.phone)
+    ) {
+      newErrors.phone = "Please enter a valid phone number";
+    }
+
+    // Service is required
+    if (!formData.service) {
+      newErrors.service = "Please select a service";
+    }
+
+    // Email and location are optional - no validation needed
+    // Message is optional - no validation needed
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Validate form before submitting
+    if (!validateForm()) {
+      console.log("❌ Form validation failed:", errors);
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      console.log("📧 Sending Contact form email with data:", formData);
+      console.log(
+        "🔑 Using Service ID:",
+        import.meta.env.VITE_EMAILJS_SERVICE_ID
+      );
+      console.log(
+        "🔑 Using Template ID:",
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID
+      );
+
+      // Send Email via EmailJS using environment variables
+      await emailjs.send(
+        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+        {
+          from_name: formData.name,
+          from_email: formData.email || "Not provided",
+          phone_number: formData.phone,
+          service_type: formData.service,
+          project_location: formData.location || "Not provided",
+          user_message: formData.message || "No specific message provided",
+          submission_time: new Date().toLocaleString("en-IN", {
+            timeZone: "Asia/Kolkata",
+            dateStyle: "full",
+            timeStyle: "short",
+          }),
+          interaction_type: "Contact Form - Submitted",
+        }
+      );
+
+      // Send to WhatsApp
+      const whatsappMessage = encodeURIComponent(
+        `🏗️ *New Inquiry from HPS Constructions Website*
+
+👤 *Name:* ${formData.name}
+📧 *Email:* ${formData.email || "Not provided"}
+📞 *Phone:* ${formData.phone}
+🔧 *Service:* ${formData.service}
+📍 *Location:* ${formData.location || "Not provided"}
+💬 *Message:* ${formData.message || "No specific message"}
+
+📅 *Submitted:* ${new Date().toLocaleString("en-IN", {
+          timeZone: "Asia/Kolkata",
+          dateStyle: "medium",
+          timeStyle: "short",
+        })}
+
+Please contact me regarding bamboo and POP services. Thank you!`
+      );
+
+      window.open(
+        `https://wa.me/919565550142?text=${whatsappMessage}`,
+        "_blank"
+      );
+
+      setIsSubmitting(false);
+      setSubmitStatus("success");
+
+      // Reset form
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        service: "",
+        message: "",
+        location: "",
+      });
+
+      // Clear any errors
+      setErrors({});
+
+      // Hide success message after 5 seconds
+      setTimeout(() => {
+        setSubmitStatus(null);
+      }, 5000);
+
+      console.log("✅ Contact form email and WhatsApp sent successfully");
+    } catch (error) {
+      console.error("❌ Contact EmailJS Error:", error);
+      console.error("❌ Error details:", error.text || error.message);
+      setIsSubmitting(false);
+      setSubmitStatus("error");
+
+      // WhatsApp fallback
+      const fallbackMessage = encodeURIComponent(
+        `🏗️ *HPS Constructions Inquiry*
+
+👤 ${formData.name}
+📧 ${formData.email || "Not provided"}
+📞 ${formData.phone}
+🔧 ${formData.service}
+📍 ${formData.location || "Not provided"}
+💬 ${formData.message || "No specific message"}
+
+Please contact me for bamboo and POP services.`
+      );
+
+      window.open(
+        `https://wa.me/919565550142?text=${fallbackMessage}`,
+        "_blank"
+      );
+
+      setTimeout(() => {
+        setSubmitStatus(null);
+      }, 5000);
+    }
+  };
+
+  const services = [
+    // From Categories Section (Top)
+    "Tree Guard",
+    "Bamboo Fencing",
+    "Bamboo Pole",
+    "Hessian Cloth",
+    "Bamboo Sticks",
+    "Bamboo Ladder",
+
+    // From Products Section (Bottom) - Additional Items
+    "Eucalyptus Pole",
+    "Coir Rope",
+    "Wood Poles",
+    "Bamboo and bamboo Products",
+  ];
+
+  const contactMethods = [
+    {
+      icon: <FaPhone />,
+      title: "Call Us",
+      info: "+91 9565550142",
+      action: () => (window.location.href = "tel:+919565550142"),
+      color: "#3b82f6",
+    },
+    {
+      icon: <FaWhatsapp />,
+      title: "WhatsApp",
+      info: "Chat with us instantly",
+      action: () =>
+        window.open(
+          "https://wa.me/+919565550142?text=Hello! I need bamboo and POP supplies.",
+          "_blank"
+        ),
+      color: "#25D366",
+    },
+    {
+      icon: <FaEnvelope />,
+      title: "Email",
+      info: "haripalsingh2580@gmail.com",
+      action: () =>
+        (window.location.href = "mailto:haripalsingh2580@gmail.com"),
+      color: "#dc2626",
+    },
+    {
+      icon: <FaMapMarkerAlt />,
+      title: "Visit Us",
+      info: "New Delhi, India",
+      action: () =>
+        window.open("https://maps.google.com/?q=New+Delhi+India", "_blank"),
+      color: "#059669",
+    },
+  ];
+
+  return (
+    <div className="contact-page">
+      {/* Hero Section */}
+      <section className="contact-hero">
+        <div className="hero-background">
+          <div className="floating-elements">
+            <div className="floating-bamboo">🎋</div>
+            <div className="floating-hammer">🔨</div>
+            <div className="floating-leaf">🌿</div>
+          </div>
+        </div>
+        <div className="hero-content">
+          <h1 className="hero-title">
+            <span className="gradient-text">Contact</span> HPS Constructions
+          </h1>
+          <p className="hero-subtitle">
+            Your trusted partner for premium <strong>Bamboo</strong> and{" "}
+            <strong>POP</strong> supplies
+          </p>
+          <div className="hero-badges">
+            <span className="badge eco-badge">
+              <FaLeaf /> Eco-Friendly
+            </span>
+            <span className="badge quality-badge">
+              <FaCheckCircle /> Premium Quality
+            </span>
+            <span className="badge delivery-badge">
+              <FaTruck /> Fast Delivery
+            </span>
+          </div>
+        </div>
+      </section>
+
+      {/* Quick Contact Grid */}
+      <section className="quick-contact">
+        <div className="container">
+          <h2 className="section-title">Get In Touch</h2>
+          <div className="contact-grid">
+            {contactMethods.map((method, index) => (
+              <div
+                key={index}
+                className="contact-card"
+                onClick={method.action}
+                style={{ "--card-color": method.color }}
+              >
+                <div className="card-icon" style={{ color: method.color }}>
+                  {method.icon}
+                </div>
+                <h3>{method.title}</h3>
+                <p>{method.info}</p>
+                <div className="card-hover-effect"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Form Section */}
+      <section className="contact-form-section">
+        <div className="container">
+          <div className="form-wrapper">
+            <div className="form-info">
+              <h2>Let's Build Something Amazing Together!</h2>
+              <p>
+                Whether you need bamboo for sustainable construction or POP for
+                elegant interiors, we've got you covered.
+              </p>
+
+              <div className="info-highlights">
+                <div className="highlight">
+                  <FaLeaf className="highlight-icon bamboo" />
+                  <div>
+                    <h4>Bamboo Supplies</h4>
+                    <p>
+                      Sustainable, durable, and eco-friendly bamboo products
+                    </p>
+                  </div>
+                </div>
+                <div className="highlight">
+                  <FaHammer className="highlight-icon pop" />
+                  <div>
+                    <h4>POP Solutions</h4>
+                    <p>High-quality Plaster of Paris for modern interiors</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="business-hours">
+                <h4>
+                  <FaClock /> Business Hours
+                </h4>
+                <div className="hours-grid">
+                  <span>Monday - Friday:</span> <span>9:00 AM - 7:00 PM</span>
+                  <span>Saturday:</span> <span>9:00 AM - 5:00 PM</span>
+                  <span>Sunday:</span> <span>10:00 AM - 4:00 PM</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="contact-form">
+              <form onSubmit={handleSubmit} noValidate>
+                <div className="form-header">
+                  <h3>Send Us A Message</h3>
+                  <p>
+                    Fill out the form and we'll get back to you within 24 hours
+                  </p>
+                  <div className="dual-send-info">
+                    📧 Your message will be sent instantly via Email & WhatsApp
+                  </div>
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Full Name *</label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      placeholder="Enter your full name"
+                      className={errors.name ? "error" : ""}
+                    />
+                    {errors.name && (
+                      <div className="error-message">{errors.name}</div>
+                    )}
+                  </div>
+                  <div className="form-group">
+                    <label>Phone Number *</label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      placeholder="Enter your phone number"
+                      className={errors.phone ? "error" : ""}
+                    />
+                    {errors.phone && (
+                      <div className="error-message">{errors.phone}</div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="form-group email-centered">
+                  <label>Email Address</label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    placeholder="Enter your email address (optional)"
+                  />
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Service Needed *</label>
+                    <select
+                      name="service"
+                      value={formData.service}
+                      onChange={handleInputChange}
+                      className={errors.service ? "error" : ""}
+                    >
+                      <option value="">Select a service</option>
+                      {services.map((service, index) => (
+                        <option key={index} value={service}>
+                          {service}
+                        </option>
+                      ))}
+                    </select>
+                    {errors.service && (
+                      <div className="error-message">{errors.service}</div>
+                    )}
+                  </div>
+                  <div className="form-group">
+                    <label>Project Location</label>
+                    <input
+                      type="text"
+                      name="location"
+                      value={formData.location}
+                      onChange={handleInputChange}
+                      placeholder="Where is your project located? (optional)"
+                    />
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label>Message</label>
+                  <textarea
+                    name="message"
+                    value={formData.message}
+                    onChange={handleInputChange}
+                    placeholder="Tell us about your project requirements... (optional)"
+                    rows="4"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className={`submit-btn ${isSubmitting ? "submitting" : ""}`}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <div className="spinner"></div>
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <FaPaperPlane />
+                      Send Message
+                    </>
+                  )}
+                </button>
+
+                {submitStatus === "success" && (
+                  <div className="success-message">
+                    <FaCheckCircle />
+                    Message sent successfully via Email & WhatsApp! We'll
+                    contact you soon.
+                  </div>
+                )}
+
+                {submitStatus === "error" && (
+                  <div className="error-message">
+                    <FaWhatsapp />
+                    Email failed but WhatsApp message sent! We'll contact you
+                    soon.
+                  </div>
+                )}
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Why Choose Us Section */}
+      <section className="why-choose-us">
+        <div className="container">
+          <h2 className="section-title">Why Choose HPS Constructions?</h2>
+          <div className="features-grid">
+            <div className="feature">
+              <div className="feature-icon">🌱</div>
+              <h3>Sustainable Materials</h3>
+              <p>
+                We provide eco-friendly bamboo products that are both durable
+                and environmentally responsible.
+              </p>
+            </div>
+            <div className="feature">
+              <div className="feature-icon">🏗️</div>
+              <h3>Expert Installation</h3>
+              <p>
+                Our skilled team ensures professional installation of all bamboo
+                and POP solutions.
+              </p>
+            </div>
+            <div className="feature">
+              <div className="feature-icon">🚚</div>
+              <h3>Fast Delivery</h3>
+              <p>
+                Quick and reliable delivery across Delhi NCR with proper
+                packaging and handling.
+              </p>
+            </div>
+            <div className="feature">
+              <div className="feature-icon">💰</div>
+              <h3>Competitive Prices</h3>
+              <p>
+                Best market prices without compromising on quality. Bulk orders
+                get special discounts.
+              </p>
+            </div>
+            <div className="feature">
+              <div className="feature-icon">🎨</div>
+              <h3>Custom Designs</h3>
+              <p>
+                Tailored solutions for your specific needs, from residential to
+                commercial projects.
+              </p>
+            </div>
+            <div className="feature">
+              <div className="feature-icon">🛡️</div>
+              <h3>Quality Guarantee</h3>
+              <p>
+                All our products come with quality assurance and after-sales
+                support.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Social Media & CTA */}
+      <section className="social-cta">
+        <div className="container">
+          <div className="cta-content">
+            <h2>Ready to Start Business Online?</h2>
+            <p>Your Vision, Our Code, Your Website</p>
+
+            {/* Updated social links with different colors */}
+            <div className="social-links">
+              <a
+                href="https://www.instagram.com/vpuiuxdesign/"
+                className="social-link blue-icon vishwajeet"
+                target="_blank"
+                rel="noopener noreferrer"
+                data-tooltip="Vishwajeet - UI/UX Designer"
+              >
+                <FaInstagram />
+                <span className="tooltip">Vishwajeet - UI/UX Designer</span>
+              </a>
+
+              <a
+                href="https://www.instagram.com/ayush_kr./"
+                className="social-link instagram ayush"
+                target="_blank"
+                rel="noopener noreferrer"
+                data-tooltip="Ayush - Full Stack Developer"
+              >
+                <FaInstagram />
+                <span className="tooltip">Ayush - Full Stack Developer</span>
+              </a>
+            </div>
+
+            <div className="emergency-contact">
+              <p>Need immediate Website?</p>
+              <a href="tel:+919555633827" className="emergency-btn">
+                <FaPhone />
+                Call Now: +91 9555633827
+              </a>
+            </div>
+          </div>
+        </div>
+        <div className="container">
+          <div className="agency-footer-content">
+            <div className="copyright-section">
+              <p>&copy; 2025 HPS Constructions. All rights reserved.</p>
+            </div>
+
+            <div className="agency-credit-section">
+              <div className="agency-credit">
+                <FaCode className="code-icon" />
+                <span>Website designed & developed by </span>
+                <a
+                  href="https://youragencywebsite.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="agency-link"
+                >
+                  Ayush and Vishwajeet ✨
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+export default Contact;
