@@ -40,5 +40,3 @@ HPS-Construction is a responsive web application providing construction-related 
 ## Contributing
 Contributions are welcome! Please fork the repository and submit pull requests. Report bugs or suggest features via the Issues section.
 If you want any specific details or additional sections, feel free to ask!
-
-[1](https://github.com/LeTHaLOp17/HPS-Construction)
