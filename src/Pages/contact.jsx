@@ -569,7 +569,7 @@ Please contact me for bamboo and POP services.`
               </a>
 
               <a
-                href="https://www.instagram.com/ayush_kr./"
+                href="https://www.instagram.com/ayush_kr.patel/"
                 className="social-link instagram ayush"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -600,7 +600,7 @@ Please contact me for bamboo and POP services.`
                 <FaCode className="code-icon" />
                 <span>Website designed & developed by </span>
                 <a
-                  href="https://youragencywebsite.com"
+                  href="https://www.instagram.com/ayush_kr.patel/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="agency-link"
