@@ -44,7 +44,7 @@ const Home = () => {
       unit: "piece",
       rating: 4.8,
       category: "bamboo",
-      imageUrl: "./public/images/24BambooPole.jpg",
+      imageUrl: "./public/images/24bamboopole.jpg",
     },
     {
       id: 2,
@@ -55,7 +55,7 @@ const Home = () => {
       unit: "sq ft",
       rating: 4.6,
       category: "fencing",
-      imageUrl: "./public/images/BF.jpg",
+      imageUrl: "./public/images/bf.jpg",
     },
     {
       id: 3,
