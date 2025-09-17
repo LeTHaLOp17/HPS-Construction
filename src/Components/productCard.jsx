@@ -5,6 +5,8 @@ import { createPortal } from 'react-dom';
 import "../ComponentCss/productCard.css";
 import bf from '/images/bf.jpg';
 
+// Import is fixed
+
 export default function ProductCard({
   title = "Premium Bamboo Flooring",
   description = "High-quality bamboo flooring that combines durability with eco-friendly design for modern homes and commercial spaces.",
