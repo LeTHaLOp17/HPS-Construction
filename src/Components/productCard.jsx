@@ -3,7 +3,7 @@ import emailjs from "@emailjs/browser";
 import { useUser } from "../context/UserContext";
 import { createPortal } from 'react-dom';
 import "../ComponentCss/productCard.css";
-import bf from "/images/BF.jpg";
+import bf from "/images/bf.jpg";
 
 export default function ProductCard({
   title = "Premium Bamboo Flooring",
