@@ -44,7 +44,7 @@ const Home = () => {
       unit: "piece",
       rating: 4.8,
       category: "bamboo",
-      imageUrl: "./public/images/24-feet-assam-bamboo-pole.jpg",
+      imageUrl: "./public/images/24BambooPole.jpg",
     },
     {
       id: 2,
