@@ -77,7 +77,7 @@ const Home = () => {
       unit: "sq ft",
       rating: 4.5,
       category: "fencing",
-      imageUrl: "./public/images/OBF.jpg",
+      imageUrl: "./public/images/obf.jpg",
     },
     {
       id: 5,
