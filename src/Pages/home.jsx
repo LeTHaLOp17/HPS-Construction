@@ -44,7 +44,7 @@ const Home = () => {
       unit: "piece",
       rating: 4.8,
       category: "bamboo",
-      imageUrl: "./public/images/24bamboopole.jpg",
+      imageUrl: "/images/24bamboopole.jpg",
     },
     {
       id: 2,
@@ -55,7 +55,7 @@ const Home = () => {
       unit: "sq ft",
       rating: 4.6,
       category: "fencing",
-      imageUrl: "./public/images/bf.jpg",
+      imageUrl: "/images/bf.jpg",
     },
     {
       id: 3,
@@ -66,7 +66,7 @@ const Home = () => {
       unit: "kg",
       rating: 4.7,
       category: "materials",
-      imageUrl: "./public/images/CCR.jpg",
+      imageUrl: "/images/CCR.jpg",
     },
     {
       id: 4,
@@ -77,7 +77,7 @@ const Home = () => {
       unit: "sq ft",
       rating: 4.5,
       category: "fencing",
-      imageUrl: "./public/images/obf.jpg",
+      imageUrl: "/images/obf.jpg",
     },
     {
       id: 5,
@@ -88,7 +88,7 @@ const Home = () => {
       unit: "piece",
       rating: 4.8,
       category: "bamboo",
-      imageUrl: "./public/images/tgb.jpg",
+      imageUrl: "/images/tgb.jpg",
     },
     {
       id: 6,
@@ -99,7 +99,7 @@ const Home = () => {
       unit: "roll",
       rating: 4.6,
       category: "materials",
-      imageUrl: "./public/images/hcr.jpg",
+      imageUrl: "/images/hcr.jpg",
     },
     {
       id: 7,
@@ -110,7 +110,7 @@ const Home = () => {
       unit: "piece",
       rating: 4.7,
       category: "bamboo",
-      imageUrl: "./public/images/dryt.jpg",
+      imageUrl: "/images/dryt.jpg",
     },
     {
       id: 8,
